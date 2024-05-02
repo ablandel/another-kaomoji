@@ -1,0 +1,16 @@
+type Tag implements Entity {
+    id: Int!
+    createdAt: String!
+    updatedAt: String!
+    label: String!
+}
+
+input TagForKaomojiMutation {
+    label: String!
+}
+
+type Tags implements PaginatedData {
+    data: [Tag]
+    pagination: Pagination!
+    totalCount: Int!
+}

@@ -1,0 +1,9 @@
+type Count {
+    count: Int!
+}
+
+interface Entity {
+    id: Int!
+    createdAt: String!
+    updatedAt: String!
+}

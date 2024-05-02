@@ -1,0 +1,14 @@
+type Kaomoji implements Entity {
+    id: Int!
+    createdAt: String!
+    updatedAt: String!
+    key: String!
+    emoticon: String!
+    tags: [Tag!]!
+}
+
+type Kaomojis implements PaginatedData {
+    data: [Kaomoji]
+    pagination: Pagination!
+    totalCount: Int!
+}

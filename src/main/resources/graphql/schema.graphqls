@@ -1,0 +1,21 @@
+type Query {
+    findTagsWithPagination(cursor: Int, offset: Int, limit: Int): Tags
+    countTag: Count
+    findTagById(id: Int!): Tag
+
+    findKaomojisWithPagination(cursor: Int, offset: Int, limit: Int): Kaomojis
+    countKaomoji: Count
+    findKaomojiById(id: Int!): Kaomoji
+}
+
+type Mutation {
+    createTag(label: String!): Tag
+    replaceTag(id: Int!, label: String!): Tag
+    updateTag(id: Int!, label: String!): Tag
+    deleteTagById(id: Int!): Boolean
+
+    createKaomoji(key: String!, emoticon: String!, tags: [TagForKaomojiMutation!]!): Kaomoji
+    replaceKaomoji(id: Int!, key: String, emoticon: String, tags: [TagForKaomojiMutation!]): Kaomoji
+    updateKaomoji(id: Int!, key: String, emoticon: String, tags: [TagForKaomojiMutation!]): Kaomoji
+    deleteKaomojiById(id: Int!): Boolean
+}

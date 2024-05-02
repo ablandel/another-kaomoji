@@ -1,0 +1,119 @@
+databaseChangeLog:
+  - changeSet:
+      id: "2024-05-01 - kaomoji table creation"
+      author: "ablandel"
+      changes:
+        - createTable:
+            tableName: kaomoji
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: kaomoji_pkey
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: updated_at
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: key
+                  type: TEXT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: emoticon
+                  type: TEXT
+        - createIndex:
+            columns:
+              - column:
+                  name: key
+            indexName: key_index
+            tableName: kaomoji
+            unique: true
+  - changeSet:
+      id: "2024-05-01 - tag table creation"
+      author: "ablandel"
+      changes:
+        - createTable:
+            tableName: tag
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: tag_pkey
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: updated_at
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: label
+                  type: TEXT
+        - createIndex:
+            columns:
+              - column:
+                  name: label
+            indexName: label_index
+            tableName: tag
+            unique: true
+  - changeSet:
+      id: "2024-05-031 - kaomojis_tags table creation"
+      author: "ablandel"
+      changes:
+        - createTable:
+            tableName: kaomojis_tags
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: kaomoji_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: tag_id
+                  type: BIGINT
+        - addForeignKeyConstraint:
+            baseColumnNames: kaomoji_id
+            baseTableName: kaomojis_tags
+            constraintName: fk_kaomoji
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: CASCADE
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: kaomoji
+            validate: true
+        - addForeignKeyConstraint:
+            baseColumnNames: tag_id
+            baseTableName: kaomojis_tags
+            constraintName: fk_tag
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: CASCADE
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: tag
+            validate: true

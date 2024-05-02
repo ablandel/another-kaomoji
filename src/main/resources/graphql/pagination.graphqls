@@ -1,0 +1,10 @@
+type Pagination {
+    cursor: Int
+    offset: Int
+    limit: Int
+}
+
+interface PaginatedData {
+    pagination: Pagination!
+    totalCount: Int!
+}
