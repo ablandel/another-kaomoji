@@ -15,3 +15,7 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-root.yaml
     drop-first: false
+  docker:
+    compose:
+      enabled: false
+      file: docker-compose.yaml
