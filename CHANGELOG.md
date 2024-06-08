@@ -13,6 +13,10 @@ Add the changes here.
 
 - Configuration of the default logger with rolling policy to trace server logs in a file
 
+### Fix
+
+- Fix N+1 request problem during `Kaomoji` entity fetch
+
 ## [1.1.0] - 2024-06-07
 
 ### Added
