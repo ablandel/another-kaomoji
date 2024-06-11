@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Add the changes here.
 
+### Added
+
+- Configuration of the default logger with rolling policy to trace server logs in a file
+
 ## [1.1.0] - 2024-06-07
 
 ### Added
