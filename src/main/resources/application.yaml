@@ -19,3 +19,11 @@ spring:
     compose:
       enabled: false
       file: docker-compose.yaml
+logging:
+  file:
+    name: another-kaomoji.log
+  logback:
+    rollingpolicy:
+      file-name-pattern: another-kaomoji-%d{yyyy-MM-dd}.%i.log
+      max-file-size: 100KB
+      max-history: 5
