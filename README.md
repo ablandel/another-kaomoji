@@ -12,20 +12,28 @@ docker compose up
 ```
 
 This project is also configured with the `spring-boot-docker-compose` Spring dependency. The `docker-compose.yaml` can
-be automatically launched using `spring.docker.compose.enabled` property or the gradle `bootRunDev` task.
+be automatically launched using `spring.docker.compose.enabled` property.
 
 #### Start the server
 
-If a database is already running and the application configured.
+Using the prod profile with a database already configured and running:
 
 ```shell
 ./gradlew bootRun
 ```
 
-Else, using the dev mode with the `spring-boot-docker-compose` Spring feature.
+For developers with useful tools:
 
 ```shell
-./gradlew bootRunDev
+SPRING_PROFILES_ACTIVE=dev \
+SPRING_DOCKER_COMPOSE_ENABLED=true \
+LOGGING_LEVEL_WEB=info \
+SPRING_MVC_LOG_REQUEST_DETAILS=true \
+SPRING_CODEC_LOG_REQUEST_DETAILS=true \
+SPRING_JPA_SHOW_SQL=true \
+HIBERNATE_GENERATE_STATISTICS=false \
+HIBERNATE_USE_SQL_COMMENTS=false \
+./gradlew bootRun
 ```
 
 ### Run the tests

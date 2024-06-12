@@ -52,24 +52,6 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools:3.3.0")
 }
 
-tasks.register("bootRunDev") {
-    group = "application"
-    description = "Runs this project as a Spring Boot application with the dev profile"
-    doFirst {
-        tasks.bootRun.configure {
-            systemProperty("spring.profiles.active", "dev")
-            systemProperty("spring.docker.compose.enabled", true)
-            systemProperty("logging.level.web", "info")
-            systemProperty("spring.mvc.log-request-details", true)
-            systemProperty("spring.codec.log-request-details", true)
-            systemProperty("spring.jpa.show-sql", true)
-            systemProperty("hibernate.generate_statistics", false)
-            systemProperty("hibernate.use_sql_comments", false)
-        }
-    }
-    finalizedBy("bootRun")
-}
-
 tasks.test {
     useJUnitPlatform()
     jvmArgs("-XX:+EnableDynamicAgentLoading") // see: https://eclipse.dev/openj9/docs/xxenabledynamicagentloading/
