@@ -62,6 +62,9 @@ tasks.register("bootRunDev") {
             systemProperty("logging.level.web", "info")
             systemProperty("spring.mvc.log-request-details", true)
             systemProperty("spring.codec.log-request-details", true)
+            systemProperty("spring.jpa.show-sql", true)
+            systemProperty("hibernate.generate_statistics", false)
+            systemProperty("hibernate.use_sql_comments", false)
         }
     }
     finalizedBy("bootRun")
