@@ -13,6 +13,10 @@ Add the changes here.
 
 - Configuration of the default logger with rolling policy to trace server logs in a file
 
+### Updated
+
+- Update of the dev tools configuration - removing of the broken bootRunDev `gradle` task
+
 ### Fix
 
 - Fix N+1 request problem during `Kaomoji` entity fetch
