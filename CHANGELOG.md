@@ -16,6 +16,7 @@ Add the changes here.
 ### Updated
 
 - Update of the dev tools configuration - removing of the broken bootRunDev `gradle` task
+- Add `kaomojis` mappedBy association in the `Tag` table (to `Kaomoji` table)
 
 ### Fix
 
