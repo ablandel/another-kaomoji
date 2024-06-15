@@ -10,6 +10,8 @@ import github.ablandel.anotherkaomoji.exception.InconsistentParameterException
 import github.ablandel.anotherkaomoji.exception.InvalidParameterException
 import github.ablandel.anotherkaomoji.repository.KaomojiRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import java.util.*
 
 @Service
 class KaomojiService(val kaomojiRepository: KaomojiRepository, val tagService: TagService) {
@@ -40,11 +42,13 @@ class KaomojiService(val kaomojiRepository: KaomojiRepository, val tagService: T
         return KaomojiDto.toDomain(findKaomojiById(id))
     }
 
+    @Transactional
     fun deleteById(id: Long) {
         findKaomojiById(id) // Used to check if the ID exists
         kaomojiRepository.deleteById(id)
     }
 
+    @Transactional
     fun create(kaomojiDto: KaomojiDto): KaomojiDto {
         if (kaomojiDto.key.isNullOrBlank()) {
             throw InvalidParameterException("Invalid parameters: [`key`]")
@@ -61,7 +65,7 @@ class KaomojiService(val kaomojiRepository: KaomojiRepository, val tagService: T
                 kaomojiRepository.save(
                     KaomojiDto.fromDomain(
                         kaomojiDto,
-                        tagService.prepare(kaomojiDto.tags.filter { it -> it.label != null }.map { it -> it.label!! })
+                        tagService.prepare(kaomojiDto.tags.filter { it.label != null }.map { it.label!! })
                             .toList()
                     )
                 )
@@ -71,6 +75,27 @@ class KaomojiService(val kaomojiRepository: KaomojiRepository, val tagService: T
         }
     }
 
+    private fun checkIfUniqueOrThrow(kaomojiDto: KaomojiDto, kaomoji: Kaomoji) {
+        if (kaomojiDto.key != null && kaomojiDto.emoticon != null) {
+            val otherKaomoji = kaomojiRepository.findByKeyOrEmoticon(kaomojiDto.key, kaomojiDto.emoticon)
+            if ((otherKaomoji.isNotEmpty() && kaomoji.id != otherKaomoji[0].id) || otherKaomoji.size > 1) {
+                throw DataAlreadyExistException("Kaomoji cannot be created with key `${kaomojiDto.key}` and emoticon `${kaomojiDto.emoticon}` - key or emoticon already used for another kaomoji(s)")
+            }
+        } else {
+            var otherKaomoji: Optional<Kaomoji> = Optional.empty()
+            if (kaomojiDto.key != null) {
+                otherKaomoji = kaomojiRepository.findByKeyIgnoreCase(kaomojiDto.key)
+            }
+            if (otherKaomoji.isEmpty && kaomojiDto.emoticon != null) {
+                otherKaomoji = kaomojiRepository.findByEmoticon(kaomojiDto.emoticon)
+            }
+            if (otherKaomoji.isPresent && kaomoji.id != otherKaomoji.get().id) {
+                throw DataAlreadyExistException("Kaomoji cannot be created with key `${kaomojiDto.key}` and emoticon `${kaomojiDto.emoticon}` - key or emoticon already used for another kaomoji(s)")
+            }
+        }
+    }
+
+    @Transactional
     private fun replaceOrUpdate(
         id: Long,
         kaomojiDto: KaomojiDto,
@@ -85,9 +110,11 @@ class KaomojiService(val kaomojiRepository: KaomojiRepository, val tagService: T
         if (kaomojiDto.emoticon != null && kaomojiDto.emoticon.isBlank()) {
             throw InvalidParameterException("Invalid parameters: [`emoticon`]")
         }
+        // Before replacing or updating, check if the key or the emoticon are already used by another kaomoji.
         val kaomoji = findKaomojiById(id)
-        val tags = if (kaomojiDto.tags != null) tagService.prepare(kaomojiDto.tags.filter { it -> it.label != null }
-            .map { it -> it.label!! }).toList()
+        checkIfUniqueOrThrow(kaomojiDto, kaomoji)
+        val tags = if (kaomojiDto.tags != null) tagService.prepare(kaomojiDto.tags.filter { it.label != null }
+            .map { it.label!! }).toList()
         else kaomoji.tags
         return KaomojiDto.toDomain(
             kaomojiRepository.save(

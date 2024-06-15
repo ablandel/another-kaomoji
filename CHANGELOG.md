@@ -17,10 +17,12 @@ Add the changes here.
 
 - Update of the dev tools configuration - removing of the broken bootRunDev `gradle` task
 - Add `kaomojis` mappedBy association in the `Tag` table (to `Kaomoji` table)
+- Add `@Transaction` annotation on `Tag` and `Kaomoji` services CREATE, DELETE and UPDATE/REPLACE methods
 
 ### Fix
 
 - Fix N+1 request problem during `Kaomoji` entity fetch
+- Prevent update or replacement of resources in the services if attributes already used by other resources
 
 ## [1.1.0] - 2024-06-07
 

@@ -334,6 +334,7 @@ class KaomojiServiceTest {
             )
         )
         `when`(kaomojiRepository.findById(1L)).thenReturn(Optional.of(kaomojiDb))
+        `when`(kaomojiRepository.findByKeyOrEmoticon(key = "key", emoticon = "emoticon")).thenReturn(listOf(kaomojiDb))
         `when`(
             tagService.prepare(listOf("label2", "label3"))
         ).thenReturn(
@@ -440,6 +441,7 @@ class KaomojiServiceTest {
             )
         )
         `when`(kaomojiRepository.findById(1L)).thenReturn(Optional.of(kaomojiDb))
+        `when`(kaomojiRepository.findByKeyOrEmoticon(key = "key", emoticon = "emoticon")).thenReturn(listOf(kaomojiDb))
         `when`(
             tagService.prepare(listOf("label1", "label2"))
         ).thenReturn(
@@ -476,6 +478,121 @@ class KaomojiServiceTest {
                 )
             )
         )
+    }
+
+    @Test
+    fun `replace throws DataAlreadyExistException when key is already use by another kaomoji`() {
+        val kaomojiDb = Kaomoji(
+            id = 1L,
+            key = "key",
+            emoticon = "emoticon",
+            tags = listOf(
+                Tag(id = 1L, label = "label1"),
+                Tag(id = 2L, label = "label2")
+            )
+        )
+        `when`(kaomojiRepository.findById(1L)).thenReturn(Optional.of(kaomojiDb))
+
+        val kaomojiDto =
+            KaomojiDto(
+                id = 1L,
+                key = "key",
+                emoticon = "emoticon",
+                tags = listOf()
+            )
+
+        val otherKaomojiDb = Kaomoji(
+            id = 2L,
+            key = "key",
+            emoticon = "emoticon2",
+            tags = listOf(
+                Tag(id = 1L, label = "label1"),
+                Tag(id = 2L, label = "label2")
+            )
+        )
+        `when`(kaomojiRepository.findByKeyOrEmoticon(key = "key", emoticon = "emoticon")).thenReturn(
+            listOf(otherKaomojiDb)
+        )
+
+        assertThrows(DataAlreadyExistException::class.java) {
+            kaomojiService.replace(id = 1L, kaomojiDto)
+        }
+    }
+
+    @Test
+    fun `replace throws DataAlreadyExistException when key is already use by another kaomoji (only key defined)`() {
+        val kaomojiDb = Kaomoji(
+            id = 1L,
+            key = "key",
+            emoticon = "emoticon",
+            tags = listOf(
+                Tag(id = 1L, label = "label1"),
+                Tag(id = 2L, label = "label2")
+            )
+        )
+        `when`(kaomojiRepository.findById(1L)).thenReturn(Optional.of(kaomojiDb))
+
+        val kaomojiDto =
+            KaomojiDto(
+                id = 1L,
+                key = "key",
+                tags = listOf()
+            )
+
+        val otherKaomojiDb = Kaomoji(
+            id = 2L,
+            key = "key",
+            emoticon = "emoticon2",
+            tags = listOf(
+                Tag(id = 1L, label = "label1"),
+                Tag(id = 2L, label = "label2")
+            )
+        )
+        `when`(kaomojiRepository.findByKeyIgnoreCase("key")).thenReturn(
+            Optional.of(otherKaomojiDb)
+        )
+
+        assertThrows(DataAlreadyExistException::class.java) {
+            kaomojiService.replace(id = 1L, kaomojiDto)
+        }
+    }
+
+    @Test
+    fun `replace throws DataAlreadyExistException when emoticon is already use by another kaomoji (only emoticon defined)`() {
+        val kaomojiDb = Kaomoji(
+            id = 1L,
+            key = "key",
+            emoticon = "emoticon",
+            tags = listOf(
+                Tag(id = 1L, label = "label1"),
+                Tag(id = 2L, label = "label2")
+            )
+        )
+        `when`(kaomojiRepository.findById(1L)).thenReturn(Optional.of(kaomojiDb))
+
+        val kaomojiDto =
+            KaomojiDto(
+                id = 1L,
+                emoticon = "emoticon",
+                tags = listOf()
+            )
+
+        val otherKaomojiDb = Kaomoji(
+            id = 2L,
+            key = "key",
+            emoticon = "emoticon2",
+            tags = listOf(
+                Tag(id = 1L, label = "label1"),
+                Tag(id = 2L, label = "label2")
+            )
+        )
+        `when`(kaomojiRepository.findByEmoticon("emoticon")).thenReturn(
+            Optional.of(otherKaomojiDb)
+        )
+
+        assertThrows(DataAlreadyExistException::class.java) {
+            kaomojiService.replace(id = 1L, kaomojiDto)
+        }
     }
 
     @Test
@@ -517,6 +634,7 @@ class KaomojiServiceTest {
             )
         )
         `when`(kaomojiRepository.findById(1L)).thenReturn(Optional.of(kaomojiDb))
+        `when`(kaomojiRepository.findByKeyOrEmoticon(key = "key", emoticon = "emoticon")).thenReturn(listOf(kaomojiDb))
         `when`(
             tagService.prepare(listOf("label2", "label3"))
         ).thenReturn(
@@ -561,7 +679,7 @@ class KaomojiServiceTest {
     }
 
     @Test
-    fun `update (not modification)`() {
+    fun `update (no modification)`() {
         val kaomojiDb = Kaomoji(
             id = 1L,
             key = "key",
@@ -608,5 +726,120 @@ class KaomojiServiceTest {
                 )
             )
         )
+    }
+
+    @Test
+    fun `update throws DataAlreadyExistException when key is already use by another kaomoji`() {
+        val kaomojiDb = Kaomoji(
+            id = 1L,
+            key = "key",
+            emoticon = "emoticon",
+            tags = listOf(
+                Tag(id = 1L, label = "label1"),
+                Tag(id = 2L, label = "label2")
+            )
+        )
+        `when`(kaomojiRepository.findById(1L)).thenReturn(Optional.of(kaomojiDb))
+
+        val kaomojiDto =
+            KaomojiDto(
+                id = 1L,
+                key = "key",
+                emoticon = "emoticon",
+                tags = listOf()
+            )
+
+        val otherKaomojiDb = Kaomoji(
+            id = 2L,
+            key = "key",
+            emoticon = "emoticon2",
+            tags = listOf(
+                Tag(id = 1L, label = "label1"),
+                Tag(id = 2L, label = "label2")
+            )
+        )
+        `when`(kaomojiRepository.findByKeyOrEmoticon(key = "key", emoticon = "emoticon")).thenReturn(
+            listOf(otherKaomojiDb)
+        )
+
+        assertThrows(DataAlreadyExistException::class.java) {
+            kaomojiService.update(id = 1L, kaomojiDto)
+        }
+    }
+
+    @Test
+    fun `update throws DataAlreadyExistException when key is already use by another kaomoji (only key defined)`() {
+        val kaomojiDb = Kaomoji(
+            id = 1L,
+            key = "key",
+            emoticon = "emoticon",
+            tags = listOf(
+                Tag(id = 1L, label = "label1"),
+                Tag(id = 2L, label = "label2")
+            )
+        )
+        `when`(kaomojiRepository.findById(1L)).thenReturn(Optional.of(kaomojiDb))
+
+        val kaomojiDto =
+            KaomojiDto(
+                id = 1L,
+                key = "key",
+                tags = listOf()
+            )
+
+        val otherKaomojiDb = Kaomoji(
+            id = 2L,
+            key = "key",
+            emoticon = "emoticon2",
+            tags = listOf(
+                Tag(id = 1L, label = "label1"),
+                Tag(id = 2L, label = "label2")
+            )
+        )
+        `when`(kaomojiRepository.findByKeyIgnoreCase("key")).thenReturn(
+            Optional.of(otherKaomojiDb)
+        )
+
+        assertThrows(DataAlreadyExistException::class.java) {
+            kaomojiService.update(id = 1L, kaomojiDto)
+        }
+    }
+
+    @Test
+    fun `update throws DataAlreadyExistException when emoticon is already use by another kaomoji (only emoticon defined)`() {
+        val kaomojiDb = Kaomoji(
+            id = 1L,
+            key = "key",
+            emoticon = "emoticon",
+            tags = listOf(
+                Tag(id = 1L, label = "label1"),
+                Tag(id = 2L, label = "label2")
+            )
+        )
+        `when`(kaomojiRepository.findById(1L)).thenReturn(Optional.of(kaomojiDb))
+
+        val kaomojiDto =
+            KaomojiDto(
+                id = 1L,
+                emoticon = "emoticon",
+                tags = listOf()
+            )
+
+        val otherKaomojiDb = Kaomoji(
+            id = 2L,
+            key = "key",
+            emoticon = "emoticon2",
+            tags = listOf(
+                Tag(id = 1L, label = "label1"),
+                Tag(id = 2L, label = "label2")
+            )
+        )
+        `when`(kaomojiRepository.findByEmoticon("emoticon")).thenReturn(
+            Optional.of(otherKaomojiDb)
+        )
+
+        assertThrows(DataAlreadyExistException::class.java) {
+            kaomojiService.update(id = 1L, kaomojiDto)
+        }
     }
 }
