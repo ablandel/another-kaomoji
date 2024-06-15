@@ -22,7 +22,7 @@ Add the changes here.
 ### Fix
 
 - Fix N+1 request problem during `Kaomoji` entity fetch
-- Prevent update or replacement of a `Kaomoji` if a key or a emoticon is already used by another `Kaomoji`
+- Prevent update or replacement of resources in the services if attributes already used by other resources
 
 ## [1.1.0] - 2024-06-07
 
