@@ -107,4 +107,54 @@ class KaomojiRepositoryTest {
         assertTrue(kaomojis.all { kaomoji -> kaomoji.updatedAt != null })
         assertTrue(kaomojis.map { kaomoji: Kaomoji -> kaomoji.key }.toList().containsAll(listOf("key2", "key3")))
     }
+
+    @Test
+    @Transactional
+    @Rollback
+    fun `test findByLabelIgnoreCase`() {
+        kaomojiRepository.save(
+            Kaomoji(
+                key = "key1",
+                emoticon = "emoticon1",
+                tags = listOf()
+            )
+        )
+        val kaomoji = kaomojiRepository.findByKeyIgnoreCase("key1")
+        assertTrue(kaomoji.isPresent)
+        assertTrue(kaomoji.get().id != null)
+        assertTrue(kaomoji.get().createdAt != null)
+        assertTrue(kaomoji.get().updatedAt != null)
+        assertTrue(kaomoji.get().key == "key1")
+        assertTrue(kaomoji.get().emoticon == "emoticon1")
+        assertTrue(kaomoji.get().tags.isEmpty())
+        val kaomojiOtherCase = kaomojiRepository.findByKeyIgnoreCase("Key1")
+        assertTrue(kaomojiOtherCase.isPresent)
+        assertTrue(kaomojiOtherCase.get().id != null)
+        assertTrue(kaomojiOtherCase.get().createdAt != null)
+        assertTrue(kaomojiOtherCase.get().updatedAt != null)
+        assertTrue(kaomojiOtherCase.get().key == "key1")
+        assertTrue(kaomojiOtherCase.get().emoticon == "emoticon1")
+        assertTrue(kaomojiOtherCase.get().tags.isEmpty())
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    fun `test findByEmoticon`() {
+        kaomojiRepository.save(
+            Kaomoji(
+                key = "key1",
+                emoticon = "emoticon1",
+                tags = listOf()
+            )
+        )
+        val kaomoji = kaomojiRepository.findByEmoticon("emoticon1")
+        assertTrue(kaomoji.isPresent)
+        assertTrue(kaomoji.get().id != null)
+        assertTrue(kaomoji.get().createdAt != null)
+        assertTrue(kaomoji.get().updatedAt != null)
+        assertTrue(kaomoji.get().key == "key1")
+        assertTrue(kaomoji.get().emoticon == "emoticon1")
+        assertTrue(kaomoji.get().tags.isEmpty())
+    }
 }

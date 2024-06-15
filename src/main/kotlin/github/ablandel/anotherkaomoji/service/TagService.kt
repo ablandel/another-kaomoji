@@ -9,6 +9,7 @@ import github.ablandel.anotherkaomoji.exception.InconsistentParameterException
 import github.ablandel.anotherkaomoji.exception.InvalidParameterException
 import github.ablandel.anotherkaomoji.repository.TagRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class TagService(val tagRepository: TagRepository) {
@@ -40,11 +41,13 @@ class TagService(val tagRepository: TagRepository) {
         return TagDto.toDomain(tag)
     }
 
+    @Transactional
     fun deleteById(id: Long) {
         findTagById(id) // Used to check if the ID exists
         tagRepository.deleteById(id)
     }
 
+    @Transactional
     fun create(tagDto: TagDto): TagDto {
         if (tagDto.label.isNullOrBlank()) {
             throw InvalidParameterException("Invalid parameters: [`label`]")
@@ -72,6 +75,16 @@ class TagService(val tagRepository: TagRepository) {
         return tags
     }
 
+    private fun checkIfUniqueOrThrow(tagDto: TagDto, tag: Tag) {
+        if (tagDto.label != null) {
+            val otherTag = tagRepository.findByLabelIgnoreCase(tagDto.label)
+            if (otherTag.isPresent && tag.id != otherTag.get().id) {
+                throw DataAlreadyExistException("label", tagDto.label)
+            }
+        }
+    }
+
+    @Transactional
     private fun replaceOrUpdate(
         id: Long,
         tagDto: TagDto,
@@ -83,7 +96,10 @@ class TagService(val tagRepository: TagRepository) {
         if (tagDto.label != null && tagDto.label.isBlank()) {
             throw InvalidParameterException("Invalid parameters: [`label`]")
         }
-        return TagDto.toDomain(tagRepository.save(mapping(findTagById(id), tagDto)))
+        // Before replacing or updating, check if the label is already used by another tag.
+        val tag = findTagById(id)
+        checkIfUniqueOrThrow(tagDto, tag)
+        return TagDto.toDomain(tagRepository.save(mapping(tag, tagDto)))
     }
 
     fun replace(

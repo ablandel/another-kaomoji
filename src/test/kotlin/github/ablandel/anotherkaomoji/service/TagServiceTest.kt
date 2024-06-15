@@ -286,12 +286,35 @@ class TagServiceTest {
     }
 
     @Test
+    fun `replace throws DataAlreadyExistException when label is already use by another tag`() {
+        val tagDb = Tag(
+            id = 1L,
+            label = "label"
+        )
+        `when`(tagRepository.findById(1L)).thenReturn(Optional.of(tagDb))
+
+        val tagDto =
+            TagDto(id = 1L, label = "label")
+
+        val tagWithLabelAlreadyUsedDb = Tag(
+            id = 2L,
+            label = "label"
+        )
+        `when`(tagRepository.findByLabelIgnoreCase("label")).thenReturn(Optional.of(tagWithLabelAlreadyUsedDb))
+
+        assertThrows(DataAlreadyExistException::class.java) {
+            tagService.replace(id = 1L, tagDto)
+        }
+    }
+
+    @Test
     fun replace() {
         val tagDb = Tag(
             id = 1L,
             label = "label"
         )
         `when`(tagRepository.findById(1L)).thenReturn(Optional.of(tagDb))
+        `when`(tagRepository.findByLabelIgnoreCase("label")).thenReturn(Optional.of(tagDb))
 
         val tag = Tag(
             id = 1L,
@@ -333,6 +356,7 @@ class TagServiceTest {
             label = "label"
         )
         `when`(tagRepository.findById(1L)).thenReturn(Optional.of(tagDb))
+        `when`(tagRepository.findByLabelIgnoreCase("label")).thenReturn(Optional.of(tagDb))
 
         val tag = Tag(
             id = 1L,
@@ -370,5 +394,27 @@ class TagServiceTest {
 
         assertEquals(tagDto.id, result.id)
         assertEquals(tag.label, result.label)
+    }
+
+    @Test
+    fun `update throws DataAlreadyExistException when label is already use by another tag`() {
+        val tagDb = Tag(
+            id = 1L,
+            label = "label"
+        )
+        `when`(tagRepository.findById(1L)).thenReturn(Optional.of(tagDb))
+
+        val tagDto =
+            TagDto(id = 1L, label = "label")
+
+        val tagWithLabelAlreadyUsedDb = Tag(
+            id = 2L,
+            label = "label"
+        )
+        `when`(tagRepository.findByLabelIgnoreCase("label")).thenReturn(Optional.of(tagWithLabelAlreadyUsedDb))
+
+        assertThrows(DataAlreadyExistException::class.java) {
+            tagService.update(id = 1L, tagDto)
+        }
     }
 }
