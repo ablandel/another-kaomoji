@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Add the changes here.
 
+## [1.2.0] - 2024-06-15
+
 ### Added
 
 - Configuration of the default logger with rolling policy to trace server logs in a file
@@ -43,7 +45,9 @@ Add the changes here.
 - First version of the tag CRUD endpoints
 - First version of the tag GraphQL endpoints
 
-[unreleased]: https://github.com/ablandel/another-kaomoji/compare/1.1.0..main
+[unreleased]: https://github.com/ablandel/another-kaomoji/compare/1.2.0..main
+
+[1.2.0]: https://github.com/ablandel/another-kaomoji/compare/1.1.0..1.2.0
 
 [1.1.0]: https://github.com/ablandel/another-kaomoji/compare/1.0.0..1.1.0
 
