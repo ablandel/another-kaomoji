@@ -1,6 +1,6 @@
 # Another Kaomoji ＼(٥⁀▽⁀ )／
 
-Simple project to test Kotlin + Spring against a database.
+Simple project to test Gradle + Kotlin + Spring Boot + GraphQL against a database.
 
 ### Start the project
 
