@@ -58,6 +58,7 @@ docker build -t another-kaomoji:local .
 ```
 
 #### Start the docker compose
+
 ```shell
 docker compose -f local.docker-compose.yaml up
 ```
